@@ -43,7 +43,7 @@ def test_two_changes_yield_three_rows_one_current(spark):
     dims = apply_scd2_batch(dims, _updates(spark, [("w1", "HIGH", "2026-03-01 00:00:00")]))
 
     rows = sorted(dims.collect(), key=lambda r: r.valid_from)
-    assert len(rows) == 3                                   # exactly 3 versions
+    assert len(rows) == 3  # exactly 3 versions
     assert [r.risk_tier for r in rows] == ["LOW", "MEDIUM", "HIGH"]
     assert [r.is_current for r in rows] == [False, False, True]  # one current
     # contiguous, non-overlapping ranges:
@@ -57,7 +57,7 @@ def test_unchanged_tier_is_a_noop(spark):
         _empty_dims(spark), _updates(spark, [("w1", "LOW", "2026-01-01 00:00:00")])
     )
     again = apply_scd2_batch(dims, _updates(spark, [("w1", "LOW", "2026-02-01 00:00:00")]))
-    assert again.count() == 1                # no new version for no change
+    assert again.count() == 1  # no new version for no change
     assert again.collect()[0].is_current is True
 
 
@@ -85,7 +85,7 @@ def test_untouched_wallets_and_history_survive(spark):
         ),
     )
     dims = apply_scd2_batch(dims, _updates(spark, [("w1", "MEDIUM", "2026-02-01 00:00:00")]))
-    assert dims.count() == 3                                    # w1 x2 + w2 x1
+    assert dims.count() == 3  # w1 x2 + w2 x1
     w2 = dims.filter("wallet_id = 'w2'").collect()[0]
-    assert w2.risk_tier == "HIGH" and w2.is_current is True     # untouched
+    assert w2.risk_tier == "HIGH" and w2.is_current is True  # untouched
     assert set(dims.columns) == set(DIM_COLUMNS)

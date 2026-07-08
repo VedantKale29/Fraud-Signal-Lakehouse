@@ -30,9 +30,17 @@ data "aws_iam_policy_document" "emr_job" {
       "glue:GetPartition", "glue:GetPartitions", "glue:CreateTable",
       "glue:UpdateTable", "glue:CreatePartition", "glue:BatchCreatePartition"
     ]
-    resources = ["*"] # catalog ARNs are account-scoped; actions are read/DDL only
+    resources = [
+      "arn:aws:glue:${var.aws_region}:${data.aws_caller_identity.me.account_id}:catalog",
+      "arn:aws:glue:${var.aws_region}:${data.aws_caller_identity.me.account_id}:database/*",
+      "arn:aws:glue:${var.aws_region}:${data.aws_caller_identity.me.account_id}:table/*/*",
+    ]
   }
   statement {
+    # PutMetricData does not support resource-level permissions (AWS docs);
+    # the namespace condition IS the constraint. checkov skip is justified.
+    #checkov:skip=CKV_AWS_111
+    #checkov:skip=CKV_AWS_356
     sid       = "Metrics"
     actions   = ["cloudwatch:PutMetricData"]
     resources = ["*"]

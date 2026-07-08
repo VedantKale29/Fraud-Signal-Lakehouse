@@ -33,11 +33,7 @@ def _latest_update_per_wallet(updates):
     from pyspark.sql import functions as F
 
     w = Window.partitionBy("wallet_id").orderBy(F.col("snapshot_ts").desc())
-    return (
-        updates.withColumn("_rn", F.row_number().over(w))
-        .filter(F.col("_rn") == 1)
-        .drop("_rn")
-    )
+    return updates.withColumn("_rn", F.row_number().over(w)).filter(F.col("_rn") == 1).drop("_rn")
 
 
 def apply_scd2_batch(dims, updates):

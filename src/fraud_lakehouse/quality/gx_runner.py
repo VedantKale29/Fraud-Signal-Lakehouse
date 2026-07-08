@@ -21,8 +21,8 @@ from fraud_lakehouse.common.logger import get_logger
 logger = get_logger(__name__)
 
 CONTRACT_COLUMNS = {"tx_id", "wallet_id", "event_ts", "value", "asset"}
-ROW_COUNT_MIN = 1            # tune per docs/data_contract.md volumes
-ROW_COUNT_MAX = 10_000_000   # sanity ceiling: a 200x day is a bug, not growth
+ROW_COUNT_MIN = 1  # tune per docs/data_contract.md volumes
+ROW_COUNT_MAX = 10_000_000  # sanity ceiling: a 200x day is a bug, not growth
 
 
 @dataclass
@@ -62,9 +62,7 @@ def audit_dataframe(df, now_ts=None) -> AuditReport:
             F.count("tx_id").alias("n_tx"),
             F.countDistinct("tx_id").alias("n_tx_distinct"),
             F.sum(F.when(F.col("value") < 0, 1).otherwise(0)).alias("n_negative"),
-            F.sum(
-                F.when(F.col("event_ts") > F.lit(now_ts), 1).otherwise(0)
-            ).alias("n_future"),
+            F.sum(F.when(F.col("event_ts") > F.lit(now_ts), 1).otherwise(0)).alias("n_future"),
             F.sum(F.when(F.col("event_ts").isNull(), 1).otherwise(0)).alias("n_null_ts"),
         ).collect()[0]
 

@@ -52,9 +52,7 @@ def emit_metric(name: str, value: float, unit: str = "Count", env: str | None = 
                     "MetricName": name,
                     "Value": float(value),
                     "Unit": unit,
-                    "Dimensions": [
-                        {"Name": "env", "Value": env or os.getenv("FSL_ENV", "dev")}
-                    ],
+                    "Dimensions": [{"Name": "env", "Value": env or os.getenv("FSL_ENV", "dev")}],
                 }
             ],
         )

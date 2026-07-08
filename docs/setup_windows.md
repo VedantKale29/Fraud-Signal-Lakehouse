@@ -56,6 +56,12 @@ If blocked: `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` then retry.
 ```
 MinIO console: http://localhost:9001 (admin / admin12345).
 
+## Before every push (mirrors CI exactly)
+```powershell
+ruff check --fix src tests; black src tests; .\tasks.ps1 test
+```
+If these three pass locally, CI's lint-test job cannot fail.
+
 ## Daily loop in VS Code
 1. Open folder; select the `venv` interpreter (bottom-right).
 2. New PowerShell terminal auto-activates the venv.

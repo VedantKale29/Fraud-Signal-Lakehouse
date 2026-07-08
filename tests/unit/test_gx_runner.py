@@ -9,7 +9,7 @@ from fraud_lakehouse.quality.gx_runner import audit_dataframe
 from fraud_lakehouse.transforms.silver_transform import cast_and_normalize
 
 COLS = ["tx_id", "wallet_id", "counterparty_id", "event_ts", "value", "asset"]
-NOW = datetime(2026, 7, 7, tzinfo=timezone.utc)   # injected: deterministic tests
+NOW = datetime(2026, 7, 7, tzinfo=timezone.utc)  # injected: deterministic tests
 
 
 def _df(spark, rows):

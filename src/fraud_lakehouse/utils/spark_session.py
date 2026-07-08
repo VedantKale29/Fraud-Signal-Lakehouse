@@ -51,14 +51,12 @@ def get_spark(cfg: AppConfig, local: bool = False):
                 )
             )
         else:
-            builder = (
-                builder.config(
-                    f"spark.sql.catalog.{cfg.spark.catalog_name}.catalog-impl",
-                    "org.apache.iceberg.aws.glue.GlueCatalog",
-                ).config(
-                    f"spark.sql.catalog.{cfg.spark.catalog_name}.warehouse",
-                    cfg.spark.warehouse,
-                )
+            builder = builder.config(
+                f"spark.sql.catalog.{cfg.spark.catalog_name}.catalog-impl",
+                "org.apache.iceberg.aws.glue.GlueCatalog",
+            ).config(
+                f"spark.sql.catalog.{cfg.spark.catalog_name}.warehouse",
+                cfg.spark.warehouse,
             )
         spark = builder.getOrCreate()
         logger.info("SparkSession started (local=%s, app=%s)", local, cfg.spark.app_name)

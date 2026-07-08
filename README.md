@@ -47,7 +47,7 @@ trust, engineered — every claim below is backed by an automated test.
 | **Observable & governed** | custom CloudWatch metrics with `treat_missing_data=breaching` alarms, SNS failure callbacks with runbook links, OIDC-based CD, Lake Formation column masking for analyst roles |
 | **Typed failures, diagnosable at 3am** | custom exception hierarchy auto-captures origin file/line + root cause; central rotating-file logger in every module |
 
-**Test suite: 40 unit gates** (pytest + chispa + moto, real local Spark)
+**Test suite: 50 unit gates** (pytest + chispa + moto, real local Spark)
 plus integration gates against dockerised Kafka and a post-deploy smoke
 test wired into CD. Every stage of the build had a named testing gate that
 blocked progression.
@@ -74,7 +74,7 @@ Python 3.10/3.11 · pytest / chispa / moto
 - [x] **Stage 1 — Batch core**: bronze->silver->gold medallion, star schema + SCD2, dbt models + tests, WAP audit, Airflow DAG *(unit gates green; AWS demo run pending)*
 - [x] **Stage 2 — Streaming**: chaos producer, windowed velocity features, exactly-once Iceberg sink *(unit gates green; Kafka integration gates run locally)*
 - [x] **Stage 3 — Hardening**: full Terraform estate (EMR/MSK/LF/monitoring), OIDC CD + smoke test, metrics/alerts, runbook *(drills on real AWS pending)*
-- [ ] **Stage 4 — Differentiator**: anomaly model evaluated on Elliptic labels (time-split PR-AUC) + RAG fraud-analyst agent + fraud-ops dashboard
+- [x] **Stage 4 — Differentiator**: fraud model (time-split PR-AUC + precision@k, MLflow), guardrailed RAG fraud-analyst (deterministic evidence retrieval, masked fields never surface), Streamlit ops dashboard *(gates green; Elliptic full run + Bedrock demo pending)*
 
 ## Getting started
 

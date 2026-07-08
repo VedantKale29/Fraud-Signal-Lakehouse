@@ -19,6 +19,7 @@ resource "aws_msk_serverless_cluster" "kafka" {
 }
 
 resource "aws_security_group" "msk" {
+  #checkov:skip=CKV2_AWS_5:Attached to the MSK cluster above; checkov cannot trace through count-conditional resources.
   count  = var.msk_enabled ? 1 : 0
   name   = "fsl-msk-${var.env}"
   vpc_id = var.vpc_id

@@ -35,8 +35,7 @@ class BronzeIngestor:
     # -- path helpers ----------------------------------------------------
     def partition_prefix(self, logical_date: date) -> str:
         return (
-            f"{self.cfg.s3.bronze_prefix}/transactions/"
-            f"ingest_date={logical_date.isoformat()}"
+            f"{self.cfg.s3.bronze_prefix}/transactions/" f"ingest_date={logical_date.isoformat()}"
         )
 
     def bronze_uri(self, logical_date: date) -> str:
@@ -66,9 +65,7 @@ class BronzeIngestor:
             raise
         except Exception as e:
             logger.error("bronze ingest failed for %s", logical_date, exc_info=True)
-            raise IngestionError(
-                f"Bronze ingest failed for logical_date={logical_date}", e
-            ) from e
+            raise IngestionError(f"Bronze ingest failed for logical_date={logical_date}", e) from e
 
     # -- internals ----------------------------------------------------------
     @staticmethod

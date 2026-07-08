@@ -13,6 +13,12 @@ chispa>=0.10
 moto[s3]>=5.0
 pre-commit>=3.7
 
+# Stage 4 (ML + agent + dashboard)
+scikit-learn>=1.4
+pandas>=2.0
+mlflow>=2.14
+streamlit>=1.35
+
 # Stage 1 additions (uncomment when the stage starts)
 # dbt-core==1.9.*
 # dbt-athena-community==1.9.*

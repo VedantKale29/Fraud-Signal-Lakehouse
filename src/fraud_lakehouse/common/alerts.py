@@ -26,9 +26,7 @@ def send_alert(subject: str, message: str, topic_arn: str | None = None) -> bool
     try:
         import boto3
 
-        boto3.client("sns").publish(
-            TopicArn=topic_arn, Subject=subject[:100], Message=message
-        )
+        boto3.client("sns").publish(TopicArn=topic_arn, Subject=subject[:100], Message=message)
         logger.info("alert sent: %s", subject)
         return True
     except Exception:

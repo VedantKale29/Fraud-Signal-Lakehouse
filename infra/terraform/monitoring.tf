@@ -3,7 +3,8 @@
 # and the billing guardrail.
 
 resource "aws_sns_topic" "alerts" {
-  name = "fsl-alerts-${var.env}"
+  name              = "fsl-alerts-${var.env}"
+  kms_master_key_id = "alias/aws/sns"
 }
 
 resource "aws_sns_topic_subscription" "email" {

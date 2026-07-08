@@ -21,10 +21,10 @@ def _raw(spark, rows):
 def test_cast_and_normalize_types_and_case(spark):
     df = _raw(spark, [(" t1 ", "w1", "w2", "2026-07-01 10:00:00", "12.5", " btc ")])
     out = cast_and_normalize(df).collect()[0]
-    assert out.tx_id == "t1"                       # trimmed
-    assert out.asset == "BTC"                      # upper + trimmed
-    assert isinstance(out.event_ts, datetime)      # real timestamp now
-    assert float(out.value) == 12.5                # decimal, not string
+    assert out.tx_id == "t1"  # trimmed
+    assert out.asset == "BTC"  # upper + trimmed
+    assert isinstance(out.event_ts, datetime)  # real timestamp now
+    assert float(out.value) == 12.5  # decimal, not string
 
 
 def test_quarantine_catches_every_contract_breach(spark):
@@ -32,11 +32,11 @@ def test_quarantine_catches_every_contract_breach(spark):
         _raw(
             spark,
             [
-                ("t1", "w1", "w2", "2026-07-01 10:00:00", "10", "BTC"),   # clean
+                ("t1", "w1", "w2", "2026-07-01 10:00:00", "10", "BTC"),  # clean
                 (None, "w1", "w2", "2026-07-01 10:00:00", "10", "BTC"),  # null key
-                ("t3", "w1", "w2", None, "10", "BTC"),                   # null ts
+                ("t3", "w1", "w2", None, "10", "BTC"),  # null ts
                 ("t4", "w1", "w2", "2026-07-01 10:00:00", "-5", "BTC"),  # negative
-                ("t5", "w1", "w2", "2026-07-01 10:00:00", "10", "DOGE"), # bad asset
+                ("t5", "w1", "w2", "2026-07-01 10:00:00", "10", "DOGE"),  # bad asset
             ],
         )
     )

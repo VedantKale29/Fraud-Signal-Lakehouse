@@ -20,8 +20,13 @@ def test_event_shape_matches_contract():
     p = TransactionProducer(_cfg(), ChaosProfile(late_fraction=0.0))
     e = p.make_event(1)
     assert set(e) == {
-        "tx_id", "wallet_id", "counterparty_id", "value",
-        "asset", "event_ts", "produced_ts",
+        "tx_id",
+        "wallet_id",
+        "counterparty_id",
+        "value",
+        "asset",
+        "event_ts",
+        "produced_ts",
     }
     assert e["value"] >= 0
 

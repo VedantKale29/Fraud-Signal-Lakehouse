@@ -19,6 +19,6 @@ def test_loads_and_env_override(tmp_path, monkeypatch):
     )
     monkeypatch.setenv("FSL_S3_BUCKET", "from-env")
     cfg = load_config(p)
-    assert cfg.s3.bucket == "from-env"       # env wins
+    assert cfg.s3.bucket == "from-env"  # env wins
     assert cfg.kafka.bootstrap_servers == "localhost:9092"  # default fills gaps
     assert cfg.spark.shuffle_partitions == 64

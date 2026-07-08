@@ -82,14 +82,8 @@ def deduplicate(df):
         from pyspark.sql import Window
         from pyspark.sql import functions as F
 
-        w = Window.partitionBy("tx_id").orderBy(
-            F.col("event_ts").desc(), F.col("wallet_id").asc()
-        )
-        return (
-            df.withColumn("_rn", F.row_number().over(w))
-            .filter(F.col("_rn") == 1)
-            .drop("_rn")
-        )
+        w = Window.partitionBy("tx_id").orderBy(F.col("event_ts").desc(), F.col("wallet_id").asc())
+        return df.withColumn("_rn", F.row_number().over(w)).filter(F.col("_rn") == 1).drop("_rn")
     except Exception as e:
         logger.error("deduplicate failed", exc_info=True)
         raise TransformError("deduplicate failed", e) from e

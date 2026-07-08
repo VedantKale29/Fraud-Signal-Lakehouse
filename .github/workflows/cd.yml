@@ -12,6 +12,10 @@ permissions:
 
 jobs:
   deploy:
+    # Skips (grey, not red) until the AWS OIDC role exists and the repo
+    # variable AWS_DEPLOY_ROLE_ARN is set -- Settings > Secrets and
+    # variables > Actions > Variables. Part of the Stage-3 AWS weekend.
+    if: ${{ vars.AWS_DEPLOY_ROLE_ARN != '' }}
     runs-on: ubuntu-latest
     environment: ${{ github.event_name == 'release' && 'demo' || 'dev' }}
     steps:

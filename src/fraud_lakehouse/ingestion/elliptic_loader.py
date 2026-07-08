@@ -23,7 +23,7 @@ contract-shaped data so every downstream stage is buildable today.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 
 from fraud_lakehouse.common.exceptions import IngestionError
@@ -83,19 +83,21 @@ def load_elliptic(spark, features_csv: Path, classes_csv: Path):
 
         classes = spark.read.csv(str(classes_csv), header=True, inferSchema=False)
         c0, c1 = classes.columns
-        labels = classes.select(
-            F.col(c0).cast("string").alias("tx_id"),
-            F.col(c1).alias("raw_class"),
-        ).withColumn(
-            "fraud_label",
-            F.when(F.col("raw_class") == "1", "ILLICIT")
-            .when(F.col("raw_class") == "2", "LICIT")
-            .otherwise("UNKNOWN"),
-        ).drop("raw_class")
-
-        logger.info(
-            "elliptic loaded | tx=%d labels=%d", transactions.count(), labels.count()
+        labels = (
+            classes.select(
+                F.col(c0).cast("string").alias("tx_id"),
+                F.col(c1).alias("raw_class"),
+            )
+            .withColumn(
+                "fraud_label",
+                F.when(F.col("raw_class") == "1", "ILLICIT")
+                .when(F.col("raw_class") == "2", "LICIT")
+                .otherwise("UNKNOWN"),
+            )
+            .drop("raw_class")
         )
+
+        logger.info("elliptic loaded | tx=%d labels=%d", transactions.count(), labels.count())
         return transactions, labels
     except IngestionError:
         raise
@@ -121,12 +123,8 @@ def generate_synthetic(spark, n: int = 10_000):
         return base.select(
             F.concat(F.lit("tx-"), F.col("seq")).alias("tx_id"),
             F.concat(F.lit("w-"), md5_mod(F.col("seq"), 500)).alias("wallet_id"),
-            F.concat(F.lit("w-"), md5_mod(F.col("seq") + 7, 500)).alias(
-                "counterparty_id"
-            ),
-            (
-                F.lit(BASE_DATE) + F.make_interval(secs=(F.col("seq") % 2_592_000))
-            ).alias("event_ts"),
+            F.concat(F.lit("w-"), md5_mod(F.col("seq") + 7, 500)).alias("counterparty_id"),
+            (F.lit(BASE_DATE) + F.make_interval(secs=(F.col("seq") % 2_592_000))).alias("event_ts"),
             F.round(F.pmod(F.col("seq") * 37.7, 5000.0) + 1, 2).cast("string").alias("value"),
             F.when(F.col("seq") % 3 == 0, "ETH").otherwise("BTC").alias("asset"),
         )

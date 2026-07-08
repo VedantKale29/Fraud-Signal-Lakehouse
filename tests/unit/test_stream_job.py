@@ -13,16 +13,18 @@ from fraud_lakehouse.streaming.stream_job import (
 
 def _kafka_like(spark, payloads):
     """Mimic the Kafka source: one binary `value` column."""
-    return spark.createDataFrame(
-        [(json.dumps(p).encode(),) for p in payloads], ["value"]
-    )
+    return spark.createDataFrame([(json.dumps(p).encode(),) for p in payloads], ["value"])
 
 
 def _evt(tx, wallet, ts, value=10.0, cp="w-9"):
     return {
-        "tx_id": tx, "wallet_id": wallet, "counterparty_id": cp,
-        "value": value, "asset": "BTC",
-        "event_ts": ts, "produced_ts": ts,
+        "tx_id": tx,
+        "wallet_id": wallet,
+        "counterparty_id": cp,
+        "value": value,
+        "asset": "BTC",
+        "event_ts": ts,
+        "produced_ts": ts,
     }
 
 
@@ -32,8 +34,8 @@ def test_parse_events_typed_and_corrupt_flagged(spark):
     out = parse_events(df)
     rows = {bool(r._corrupt): r for r in out.collect()}
     assert rows[False].tx_id == "t1"
-    assert rows[False].event_ts.hour == 10          # real timestamp
-    assert rows[True]._raw.startswith("not-json")   # dead-letter keeps payload
+    assert rows[False].event_ts.hour == 10  # real timestamp
+    assert rows[True]._raw.startswith("not-json")  # dead-letter keeps payload
 
 
 def test_build_features_window_math(spark):
@@ -61,7 +63,7 @@ def test_prepare_batch_collapses_merge_key_dupes(spark):
     df = spark.createDataFrame(
         [
             ("w1", "2026-07-01 10:00:00", 3, 60.0),
-            ("w1", "2026-07-01 10:00:00", 5, 90.0),   # same MERGE key -> keep richer
+            ("w1", "2026-07-01 10:00:00", 5, 90.0),  # same MERGE key -> keep richer
             ("w2", "2026-07-01 10:00:00", 1, 10.0),
         ],
         ["wallet_id", "window_start", "tx_count", "total_value"],

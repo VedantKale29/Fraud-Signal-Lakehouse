@@ -2,7 +2,6 @@
 and both FAIL OPEN -- a broken side-channel never fails the pipeline."""
 
 import boto3
-import pytest
 from moto import mock_aws
 
 from fraud_lakehouse.common.alerts import send_alert, task_failure_alert
@@ -13,9 +12,7 @@ from fraud_lakehouse.common.metrics import NAMESPACE, emit_metric
 def test_emit_metric_lands_in_cloudwatch(monkeypatch):
     monkeypatch.setenv("AWS_DEFAULT_REGION", "ap-south-1")
     assert emit_metric("silver_rows_written", 1234) is True
-    stats = boto3.client("cloudwatch", region_name="ap-south-1").list_metrics(
-        Namespace=NAMESPACE
-    )
+    stats = boto3.client("cloudwatch", region_name="ap-south-1").list_metrics(Namespace=NAMESPACE)
     names = {m["MetricName"] for m in stats["Metrics"]}
     assert "silver_rows_written" in names
 

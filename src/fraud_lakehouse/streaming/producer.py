@@ -25,10 +25,10 @@ logger = get_logger(__name__)
 class ChaosProfile:
     """Knobs the streaming tests turn."""
 
-    late_fraction: float = 0.10      # share of events emitted late
-    late_minutes_max: int = 20       # how late the stragglers can be
-    duplicate_fraction: float = 0.05 # share of events sent twice
-    burst_factor: int = 1            # multiply steady rate for burst tests
+    late_fraction: float = 0.10  # share of events emitted late
+    late_minutes_max: int = 20  # how late the stragglers can be
+    duplicate_fraction: float = 0.05  # share of events sent twice
+    burst_factor: int = 1  # multiply steady rate for burst tests
 
 
 class TransactionProducer:
@@ -56,9 +56,7 @@ class TransactionProducer:
         now = datetime.now(timezone.utc)
         event_ts = now
         if random.random() < self.chaos.late_fraction:
-            event_ts = now - timedelta(
-                minutes=random.uniform(1, self.chaos.late_minutes_max)
-            )
+            event_ts = now - timedelta(minutes=random.uniform(1, self.chaos.late_minutes_max))
         return {
             "tx_id": f"tx-{seq}",
             "wallet_id": f"w-{random.randint(1, 500)}",

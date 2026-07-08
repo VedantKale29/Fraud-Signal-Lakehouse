@@ -27,8 +27,7 @@ from pathlib import Path
 
 _LOG_DIR = Path(os.getenv("LOG_DIR", "logs"))
 _FORMAT = (
-    "[%(asctime)s] %(levelname)-8s %(name)s "
-    "(%(module)s:%(funcName)s:%(lineno)d) - %(message)s"
+    "[%(asctime)s] %(levelname)-8s %(name)s " "(%(module)s:%(funcName)s:%(lineno)d) - %(message)s"
 )
 _DATEFMT = "%Y-%m-%d %H:%M:%S"
 

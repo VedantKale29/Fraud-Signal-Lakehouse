@@ -24,7 +24,7 @@ def test_captures_origin_file_and_line():
     except IngestionError as err:
         msg = str(err)
         assert "bronze landing failed" in msg
-        assert "test_exceptions.py" in msg          # file captured
+        assert "test_exceptions.py" in msg  # file captured
         assert "caused_by=ZeroDivisionError" in msg  # original preserved
         assert err.original is not None
         assert "ZeroDivisionError" in err.full_traceback()

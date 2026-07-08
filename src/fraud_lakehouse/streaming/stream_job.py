@@ -27,7 +27,7 @@ from fraud_lakehouse.utils.spark_session import get_spark
 
 logger = get_logger(__name__)
 
-WATERMARK = "15 minutes"   # tuned from measured p99 event lag (SS5.2 gate)
+WATERMARK = "15 minutes"  # tuned from measured p99 event lag (SS5.2 gate)
 WINDOW = "10 minutes"
 
 EVENT_SCHEMA_DDL = (
@@ -99,13 +99,9 @@ def prepare_batch(batch_df):
         from pyspark.sql import Window
         from pyspark.sql import functions as F
 
-        w = Window.partitionBy("wallet_id", "window_start").orderBy(
-            F.col("tx_count").desc()
-        )
+        w = Window.partitionBy("wallet_id", "window_start").orderBy(F.col("tx_count").desc())
         return (
-            batch_df.withColumn("_rn", F.row_number().over(w))
-            .filter(F.col("_rn") == 1)
-            .drop("_rn")
+            batch_df.withColumn("_rn", F.row_number().over(w)).filter(F.col("_rn") == 1).drop("_rn")
         )
     except Exception as e:
         logger.error("prepare_batch failed", exc_info=True)

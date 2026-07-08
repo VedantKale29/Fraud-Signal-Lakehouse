@@ -46,6 +46,14 @@ FILE_LIST = [
     f"src/{PROJECT}/utils/__init__.py",
     f"src/{PROJECT}/utils/spark_session.py",
     f"src/{PROJECT}/utils/s3_utils.py",
+    f"src/{PROJECT}/ml/__init__.py",
+    f"src/{PROJECT}/ml/features.py",
+    f"src/{PROJECT}/ml/train.py",
+    f"src/{PROJECT}/ml/score.py",
+    f"src/{PROJECT}/agent/__init__.py",
+    f"src/{PROJECT}/agent/retriever.py",
+    f"src/{PROJECT}/agent/analyst.py",
+    "dashboard/app.py",
     # -- orchestration ----------------------------------------------------
     "dags/fraud_lakehouse_dag.py",
     # -- dbt ----------------------------------------------------------------
@@ -89,6 +97,8 @@ FILE_LIST = [
     "tests/unit/test_stream_job.py",
     "tests/unit/test_producer.py",
     "tests/unit/test_metrics_alerts.py",
+    "tests/unit/test_ml.py",
+    "tests/unit/test_agent.py",
     "tests/integration/__init__.py",
     "tests/integration/test_stream_kafka.py",
     "tests/e2e/__init__.py",

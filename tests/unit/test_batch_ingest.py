@@ -54,7 +54,7 @@ def test_rerun_same_date_is_idempotent(raw_dir):
     ing.run(raw_dir, date(2026, 7, 1))
     ing.run(raw_dir, date(2026, 7, 1))  # retry / backfill of the same date
     keys = list_keys(BUCKET, "bronze/transactions/ingest_date=2026-07-01")
-    assert len(keys) == 2               # NOT 4
+    assert len(keys) == 2  # NOT 4
 
 
 @mock_aws

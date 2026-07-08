@@ -44,7 +44,8 @@ def test_producer_roundtrip(kafka_up):
 
     cfg = load_config()
     cfg = type(cfg)(
-        env=cfg.env, s3=cfg.s3,
+        env=cfg.env,
+        s3=cfg.s3,
         kafka=type(cfg.kafka)(BOOTSTRAP, TOPIC, "itest"),
         spark=cfg.spark,
     )
@@ -52,11 +53,14 @@ def test_producer_roundtrip(kafka_up):
         events_per_sec=200, total=100
     )
     consumer = KafkaConsumer(
-        TOPIC, bootstrap_servers=BOOTSTRAP, auto_offset_reset="earliest",
-        consumer_timeout_ms=5000, group_id=f"itest-{time.time()}",
+        TOPIC,
+        bootstrap_servers=BOOTSTRAP,
+        auto_offset_reset="earliest",
+        consumer_timeout_ms=5000,
+        group_id=f"itest-{time.time()}",
     )
     msgs = [json.loads(m.value) for m in consumer]
-    assert len(msgs) >= 100                      # duplicates arrived too
+    assert len(msgs) >= 100  # duplicates arrived too
     assert {m["tx_id"] for m in msgs} == {f"tx-{i}" for i in range(100)}
 
 
