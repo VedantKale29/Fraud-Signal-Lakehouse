@@ -1,0 +1,18 @@
+env: dev
+
+s3:
+  bucket: CHANGE_ME-fraud-lakehouse   # or set FSL_S3_BUCKET
+  bronze_prefix: bronze
+  silver_prefix: silver
+  gold_prefix: gold
+
+kafka:
+  bootstrap_servers: localhost:9092    # docker-compose dev; MSK in demo env
+  transactions_topic: onchain.transactions
+  consumer_group: fsl-stream
+
+spark:
+  app_name: fraud-signal-lakehouse
+  catalog_name: glue_catalog
+  warehouse: s3://CHANGE_ME-fraud-lakehouse/warehouse
+  shuffle_partitions: 64

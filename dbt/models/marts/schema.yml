@@ -1,0 +1,11 @@
+version: 2
+models:
+  - name: fact_transaction
+    description: "Grain: one row per on-chain transaction"
+    columns:
+      - name: tx_id
+        tests: [not_null, unique]
+      - name: wallet_id
+        tests: [not_null]
+      # TODO(Stage 1): relationships test to dim_wallet current rows,
+      # accepted_values on asset, singular test on SCD2 date ranges

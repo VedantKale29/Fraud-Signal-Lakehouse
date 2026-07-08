@@ -1,0 +1,16 @@
+# Metadata + dependencies live in setup.py (template pattern with `-e .`
+# in requirements.txt). This file keeps only build-system + tool configs.
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.black]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,12 @@
+name: fraud_lakehouse
+version: "0.1.0"
+profile: fraud_lakehouse   # profiles.yml lives outside the repo (~/.dbt/)
+model-paths: ["models"]
+test-paths: ["tests"]
+
+models:
+  fraud_lakehouse:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table   # Athena+Iceberg via dbt-athena (Stage 1)
