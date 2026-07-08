@@ -16,6 +16,14 @@ def get_spark(cfg: AppConfig, local: bool = False):
     installed (e.g. the Kafka producer container).
     """
     try:
+        import os
+        import sys
+
+        # Pin worker Python to this exact interpreter (prevents
+        # PYTHON_VERSION_MISMATCH when multiple Pythons are installed).
+        os.environ.setdefault("PYSPARK_PYTHON", sys.executable)
+        os.environ.setdefault("PYSPARK_DRIVER_PYTHON", sys.executable)
+
         from pyspark.sql import SparkSession  # lazy import by design
 
         builder = (
@@ -31,8 +39,11 @@ def get_spark(cfg: AppConfig, local: bool = False):
             )
         )
         if local:
+            os.environ.setdefault("SPARK_LOCAL_IP", "127.0.0.1")
             builder = (
                 builder.master("local[*]")
+                .config("spark.driver.host", "127.0.0.1")
+                .config("spark.driver.bindAddress", "127.0.0.1")
                 .config(f"spark.sql.catalog.{cfg.spark.catalog_name}.type", "hadoop")
                 .config(
                     f"spark.sql.catalog.{cfg.spark.catalog_name}.warehouse",

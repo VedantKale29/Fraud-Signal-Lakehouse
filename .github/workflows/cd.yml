@@ -1,0 +1,39 @@
+name: cd
+
+on:
+  push:
+    branches: [main]        # merge to main -> deploy dev
+  release:
+    types: [published]      # tagged release -> provision demo env
+
+permissions:
+  id-token: write           # OIDC to AWS -- no long-lived keys in secrets
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'release' && 'demo' || 'dev' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ap-south-1
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform apply
+        working-directory: infra/terraform
+        run: |
+          terraform init
+          terraform apply -auto-approve \
+            -var env=${{ github.event_name == 'release' && 'demo' || 'dev' }} \
+            -var lake_bucket_name=${{ vars.LAKE_BUCKET }} \
+            -var alert_email=${{ vars.ALERT_EMAIL }}
+
+      - name: Post-deploy smoke test
+        run: |
+          pip install -r requirements.txt
+          python tests/e2e/smoke_test.py   # tiny known dataset through the path

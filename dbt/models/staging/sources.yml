@@ -5,3 +5,7 @@ sources:
     tables:
       - name: transactions
       - name: wallet_updates
+  - name: gold
+    schema: gold
+    tables:
+      - name: dim_wallet   # SCD2 dim, maintained by Spark MERGE (not dbt)

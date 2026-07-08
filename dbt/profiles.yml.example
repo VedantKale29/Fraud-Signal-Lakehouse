@@ -1,0 +1,13 @@
+# Copy to ~/.dbt/profiles.yml (NEVER commit real values)
+fraud_lakehouse:
+  target: dev
+  outputs:
+    dev:
+      type: athena
+      s3_staging_dir: s3://CHANGE_ME-fraud-lakehouse/athena-results/
+      s3_data_dir: s3://CHANGE_ME-fraud-lakehouse/gold/
+      region_name: ap-south-1
+      schema: gold
+      database: awsdatacatalog
+      threads: 4
+      table_type: iceberg      # dbt-athena writes marts as Iceberg tables
